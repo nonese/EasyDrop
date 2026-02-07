@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+.env
+.DS_Store
+/data/app.db
+/storage/media/*
+/storage/thumb/*
+/storage/manifest/*
+!/storage/media/.gitkeep
+!/storage/thumb/.gitkeep
+!/storage/manifest/.gitkeep
