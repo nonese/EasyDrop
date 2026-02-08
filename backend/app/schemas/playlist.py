@@ -1,5 +1,7 @@
 from __future__ import annotations
-from pydantic import BaseModel
+from typing import List, Optional
+
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class PlaylistCreateRequest(BaseModel):
@@ -13,21 +15,25 @@ class PlaylistUpdateRequest(BaseModel):
 class PlaylistItemCreateRequest(BaseModel):
     media_id: str
     order_index: int
-    play_duration_ms: int | None = None
+    play_duration_ms: Optional[int] = None
 
 
 class PlaylistItemOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: str
     playlist_id: str
     media_id: str
     order_index: int
-    play_duration_ms: int | None
+    play_duration_ms: Optional[int]
     created_at: str
 
 
 class PlaylistOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: str
     name: str
-    created_by: str | None
+    created_by: Optional[str]
     created_at: str
-    items: list[PlaylistItemOut] = []
+    items: List[PlaylistItemOut] = Field(default_factory=list)

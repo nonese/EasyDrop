@@ -2,6 +2,7 @@ from __future__ import annotations
 import hashlib
 import json
 from datetime import datetime, timezone
+from typing import Dict, List, Optional
 
 from sqlalchemy.orm import Session
 
@@ -12,21 +13,21 @@ def _parse_iso(dt: str) -> datetime:
     return datetime.fromisoformat(dt.replace("Z", "+00:00"))
 
 
-def _in_daily_window(now: datetime, daily_start: str | None, daily_end: str | None) -> bool:
+def _in_daily_window(now: datetime, daily_start: Optional[str], daily_end: Optional[str]) -> bool:
     if not daily_start or not daily_end:
         return True
     now_hm = now.strftime("%H:%M")
     return daily_start <= now_hm <= daily_end
 
 
-def _in_week_mask(now: datetime, week_mask: int | None) -> bool:
+def _in_week_mask(now: datetime, week_mask: Optional[int]) -> bool:
     if week_mask is None:
         return True
     bit = 1 << now.weekday()
     return (week_mask & bit) != 0
 
 
-def _calculate_version(payload: dict) -> int:
+def _calculate_version(payload: Dict) -> int:
     encoded = json.dumps(payload, ensure_ascii=True, sort_keys=True)
     h = hashlib.sha1(encoded.encode("utf-8")).hexdigest()[:8]
     return int(h, 16)
@@ -42,7 +43,7 @@ def generate_manifest(db: Session, device_id: str) -> dict:
         .all()
     )
 
-    active: list[Campaign] = []
+    active: List[Campaign] = []
     for c in campaigns:
         if _parse_iso(c.start_at) <= now <= _parse_iso(c.end_at) and _in_week_mask(now, c.week_mask) and _in_daily_window(now, c.daily_start, c.daily_end):
             active.append(c)

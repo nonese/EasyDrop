@@ -9,21 +9,36 @@
       body { margin: 0; background: #0b1220; color: #fff; font-family: sans-serif; }
       .wrap { display: grid; grid-template-rows: auto 1fr; height: 100vh; }
       .panel { padding: 12px; background: #111a2d; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+      body.panel-collapsed .panel { display: none; }
       input, button { padding: 8px; border-radius: 6px; border: 1px solid #33415f; background: #0e1628; color: #fff; }
       button { cursor: pointer; }
+      .panel-toggle {
+        position: fixed;
+        top: 12px;
+        right: 12px;
+        z-index: 1000;
+        padding: 8px 10px;
+        border-radius: 8px;
+        border: 1px solid #41567c;
+        background: rgba(17, 26, 45, 0.88);
+        color: #d6e6ff;
+      }
       .status { margin-left: auto; font-size: 12px; color: #9fb2d8; }
       .player { display: grid; place-items: center; height: 100%; overflow: hidden; }
       video, img { max-width: 100%; max-height: 100%; }
     </style>
   </head>
   <body>
+    <button id="panelToggle" class="panel-toggle">收起菜单</button>
     <div class="wrap">
       <div class="panel">
         <input id="server" value="http://127.0.0.1:8000" style="width:240px" />
+        <button id="saveServer">保存后端地址</button>
         <input id="name" value="Screen-Web-01" style="width:160px" />
         <button id="register">注册设备</button>
         <button id="login">登录设备</button>
         <button id="start">开始播放</button>
+        <button id="refresh">刷新播放列表</button>
         <span class="status" id="status">idle</span>
       </div>
       <div class="player" id="player"></div>

@@ -1,4 +1,6 @@
 from __future__ import annotations
+from typing import List, Optional
+
 from pydantic import BaseModel
 
 
@@ -7,27 +9,27 @@ class CampaignCreateRequest(BaseModel):
     playlist_id: str
     start_at: str
     end_at: str
-    week_mask: int | None = None
-    daily_start: str | None = None
-    daily_end: str | None = None
+    week_mask: Optional[int] = None
+    daily_start: Optional[str] = None
+    daily_end: Optional[str] = None
     priority: int = 0
     enabled: bool = True
 
 
 class CampaignUpdateRequest(BaseModel):
-    name: str | None = None
-    playlist_id: str | None = None
-    start_at: str | None = None
-    end_at: str | None = None
-    week_mask: int | None = None
-    daily_start: str | None = None
-    daily_end: str | None = None
-    priority: int | None = None
-    enabled: bool | None = None
+    name: Optional[str] = None
+    playlist_id: Optional[str] = None
+    start_at: Optional[str] = None
+    end_at: Optional[str] = None
+    week_mask: Optional[int] = None
+    daily_start: Optional[str] = None
+    daily_end: Optional[str] = None
+    priority: Optional[int] = None
+    enabled: Optional[bool] = None
 
 
 class CampaignTargetRequest(BaseModel):
-    device_ids: list[str]
+    device_ids: List[str]
 
 
 class CampaignTargetOut(BaseModel):
@@ -42,11 +44,11 @@ class CampaignOut(BaseModel):
     playlist_id: str
     start_at: str
     end_at: str
-    week_mask: int | None
-    daily_start: str | None
-    daily_end: str | None
+    week_mask: Optional[int]
+    daily_start: Optional[str]
+    daily_end: Optional[str]
     priority: int
     enabled: bool
-    created_by: str | None
+    created_by: Optional[str]
     created_at: str
-    targets: list[CampaignTargetOut] = []
+    targets: List[CampaignTargetOut] = []

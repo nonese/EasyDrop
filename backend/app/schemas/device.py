@@ -1,11 +1,13 @@
 from __future__ import annotations
+from typing import Any, Dict, Optional
+
 from pydantic import BaseModel
 
 
 class DeviceRegisterRequest(BaseModel):
     name: str
     type: str
-    meta: dict | None = None
+    meta: Optional[Dict[str, Any]] = None
 
 
 class DeviceRegisterResponse(BaseModel):
@@ -27,11 +29,11 @@ class DeviceOut(BaseModel):
     id: str
     name: str
     type: str
-    last_seen_at: str | None = None
+    last_seen_at: Optional[str] = None
     status: str
-    meta_json: str | None = None
+    meta_json: Optional[str] = None
 
 
 class DeviceUpdateRequest(BaseModel):
-    name: str | None = None
-    status: str | None = None
+    name: Optional[str] = None
+    status: Optional[str] = None

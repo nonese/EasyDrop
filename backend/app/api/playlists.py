@@ -7,19 +7,36 @@ from app.core.deps import AuthSubject, require_admin_or_operator
 from app.core.security import now_iso
 from app.db.session import get_db
 from app.models.models import Media, Playlist, PlaylistItem
-from app.schemas.playlist import PlaylistCreateRequest, PlaylistItemCreateRequest, PlaylistOut, PlaylistUpdateRequest
+from app.schemas.playlist import (
+    PlaylistCreateRequest,
+    PlaylistItemCreateRequest,
+    PlaylistItemOut,
+    PlaylistOut,
+    PlaylistUpdateRequest,
+)
 
 router = APIRouter(prefix="/playlists", tags=["playlists"])
 
 
 def _to_playlist_out(playlist: Playlist, db: Session) -> PlaylistOut:
     items = db.query(PlaylistItem).filter(PlaylistItem.playlist_id == playlist.id).order_by(PlaylistItem.order_index.asc()).all()
+    item_out = [
+        PlaylistItemOut(
+            id=i.id,
+            playlist_id=i.playlist_id,
+            media_id=i.media_id,
+            order_index=i.order_index,
+            play_duration_ms=i.play_duration_ms,
+            created_at=i.created_at,
+        )
+        for i in items
+    ]
     return PlaylistOut(
         id=playlist.id,
         name=playlist.name,
         created_by=playlist.created_by,
         created_at=playlist.created_at,
-        items=items,
+        items=item_out,
     )
 
 

@@ -1,5 +1,6 @@
 from __future__ import annotations
 from dataclasses import dataclass
+from typing import Optional
 
 from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
@@ -16,7 +17,7 @@ bearer = HTTPBearer(auto_error=False)
 class AuthSubject:
     id: str
     token_type: str
-    role: str | None = None
+    role: Optional[str] = None
 
 
 def get_current_subject(
@@ -55,7 +56,7 @@ def require_admin_or_operator(subject: AuthSubject = Depends(get_current_subject
     return subject
 
 
-def extract_bearer_token_from_request(request: Request) -> str | None:
+def extract_bearer_token_from_request(request: Request) -> Optional[str]:
     auth_header = request.headers.get("Authorization", "")
     if not auth_header.startswith("Bearer "):
         return None

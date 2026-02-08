@@ -7,13 +7,23 @@ from app.core.deps import AuthSubject, require_admin_or_operator
 from app.core.security import now_iso
 from app.db.session import get_db
 from app.models.models import Campaign, CampaignTarget, Device, Playlist
-from app.schemas.campaign import CampaignCreateRequest, CampaignOut, CampaignTargetRequest, CampaignUpdateRequest
+from app.schemas.campaign import (
+    CampaignCreateRequest,
+    CampaignOut,
+    CampaignTargetOut,
+    CampaignTargetRequest,
+    CampaignUpdateRequest,
+)
 
 router = APIRouter(prefix="/campaigns", tags=["campaigns"])
 
 
 def _to_campaign_out(campaign: Campaign, db: Session) -> CampaignOut:
     targets = db.query(CampaignTarget).filter(CampaignTarget.campaign_id == campaign.id).all()
+    target_out = [
+        CampaignTargetOut(id=t.id, campaign_id=t.campaign_id, device_id=t.device_id)
+        for t in targets
+    ]
     return CampaignOut(
         id=campaign.id,
         name=campaign.name,
@@ -27,7 +37,7 @@ def _to_campaign_out(campaign: Campaign, db: Session) -> CampaignOut:
         enabled=campaign.enabled,
         created_by=campaign.created_by,
         created_at=campaign.created_at,
-        targets=targets,
+        targets=target_out,
     )
 
 
@@ -96,6 +106,22 @@ def update_campaign(
 
     db.commit()
     return _to_campaign_out(campaign, db)
+
+
+@router.delete("/{campaign_id}")
+def delete_campaign(
+    campaign_id: str,
+    _: AuthSubject = Depends(require_admin_or_operator),
+    db: Session = Depends(get_db),
+):
+    campaign = db.query(Campaign).filter(Campaign.id == campaign_id).first()
+    if not campaign:
+        raise HTTPException(status_code=404, detail="campaign not found")
+
+    db.query(CampaignTarget).filter(CampaignTarget.campaign_id == campaign_id).delete()
+    db.delete(campaign)
+    db.commit()
+    return {"message": "deleted"}
 
 
 @router.post("/{campaign_id}/targets")

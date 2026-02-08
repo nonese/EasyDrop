@@ -1,4 +1,6 @@
 from __future__ import annotations
+from typing import Optional
+
 from pydantic import BaseModel
 
 
@@ -8,10 +10,10 @@ class MediaOut(BaseModel):
     ext: str
     size_bytes: int
     sha256: str
-    duration_ms: int | None
+    duration_ms: Optional[int]
     mime: str
     storage_path: str
-    created_by: str | None
+    created_by: Optional[str]
     created_at: str
 
 

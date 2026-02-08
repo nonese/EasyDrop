@@ -1,6 +1,7 @@
 from __future__ import annotations
 import json
 import uuid
+from typing import Any, Dict, Optional
 
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
@@ -16,10 +17,10 @@ router = APIRouter(prefix="/logs", tags=["logs"])
 
 class ReportRequest(BaseModel):
     event: str
-    campaign_id: str | None = None
-    media_id: str | None = None
-    ts: str | None = None
-    detail: dict | None = None
+    campaign_id: Optional[str] = None
+    media_id: Optional[str] = None
+    ts: Optional[str] = None
+    detail: Optional[Dict[str, Any]] = None
 
 
 @router.post("/report")
